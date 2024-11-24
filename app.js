@@ -1,4 +1,4 @@
-const APIURL = "https://v6.exchangerate-api.com/v6/fdbae4130ae0fedddc2aa063/latest/";
+ const APIURL = "https://v6.exchangerate-api.com/v6/fdbae4130ae0fedddc2aa063/latest/";
 let fromCurrency = "RUB";
 let toCurrency = "USD";
 let exchangeRate = null;
@@ -13,16 +13,18 @@ const connectionMsg = document.querySelector("#connection-msg");
 const burger = document.querySelector('.burger');
 const menu = document.querySelector('.menu ul');
 const defaultAmount = 5000;
-
 leftInput.value = defaultAmount;
-
 function selectActive(buttons, selectedCurrency) {
     buttons.forEach(button => {
         button.classList.toggle("default", button.textContent === selectedCurrency);
     });
 }
-
 function getExchangeRate(from, to, callback) {
+    if (!navigator.onLine) {
+        connectionMsg.textContent = "No Connection!";
+        connectionMsg.style.display = "block";
+        return;  
+    }
     const url = `${APIURL}${from}`;
     fetch(url)
         .then(response => {
@@ -33,8 +35,11 @@ function getExchangeRate(from, to, callback) {
             const rate = data.conversion_rates[to];
             callback(rate);
         })
+        .catch(error => {
+             connectionMsg.textContent = "No Connection!"
+            connectionMsg.style.display = "block";
+        });
 }
-
 function updateConversion(side) {
     const leftValue = leftInput.value.trim();
     const rightValue = rightInput.value.trim();
@@ -62,8 +67,8 @@ function updateConversion(side) {
         getExchangeRate(fromCurrency, toCurrency, rate => {
             exchangeRate = rate;
             convert(side);
-            leftUnitValue.textContent = `1 ${fromCurrency} = ${(1 / exchangeRate).toFixed(4)} ${toCurrency}`;
-            rightUnitValue.textContent = `1 ${toCurrency} = ${exchangeRate.toFixed(4)} ${fromCurrency}`;
+            leftUnitValue.textContent = `1 ${fromCurrency} = ${(1 / exchangeRate).toFixed(5)} ${toCurrency}`;
+            rightUnitValue.textContent = `1 ${toCurrency} = ${exchangeRate.toFixed(5)} ${fromCurrency}`;
             selectActive(leftButtons, fromCurrency);
             selectActive(rightButtons, toCurrency);
         });
@@ -71,35 +76,15 @@ function updateConversion(side) {
         convert(side);
     }
 }
-
-function validateInput(event) {
-    const input = event.target;
-    let value = input.value;
-    value = value.replace(/,/g, '.');
-    value = value.replace(/[^0-9.]/g, '');
-    const parts = value.split('.');
-    if (value === "0") {
-        input.value = "0";
-        return;
-    }
-
-    if (parts[1] && parts[1].length > 5) {
-        value = parts[0] + '.' + parts[1].slice(0, 5);
-    }
-
-    input.value = value;
-}
 function convert(side) {
     let amount;
     if (side === "right") {
         amount = Number(leftInput.value);
         amount = isNaN(amount) ? 0 : amount; 
-        // Convert and show the result with up to 5 decimal places or just "0" if it's zero
         rightInput.value = amount === 0 ? "0" : (amount * exchangeRate).toFixed(5).replace(/\.?0+$/, "");
     } else if (side === "left") {
         amount = Number(rightInput.value);
         amount = isNaN(amount) ? 0 : amount;
-        // Convert and show the result with up to 5 decimal places or just "0" if it's zero
         leftInput.value = amount === 0 ? "0" : (amount / exchangeRate).toFixed(5).replace(/\.?0+$/, "");
     }
 }
@@ -131,11 +116,15 @@ function validateInput(event) {
     if (parts[1] && parts[1].length > 5) {
         value = parts[0] + '.' + parts[1].slice(0, 5);
     }
+    if (value.startsWith(".")) {
+        value = "0" + value;
+    }
     if (value === "0") {
         input.value = "0";
         return;
     }
     input.value = value;
+
 }
 
 burger.addEventListener('click', () => {
@@ -169,8 +158,8 @@ rightButtons.forEach(button => {
 updateConversion("right");
 getExchangeRate(fromCurrency, toCurrency, rate => {
     exchangeRate = rate;
-    leftUnitValue.textContent = `1 ${fromCurrency} = ${rate.toFixed(4)} ${toCurrency}`;
-    rightUnitValue.textContent = `1 ${toCurrency} = ${(1 / rate).toFixed(4)} ${fromCurrency}`;
+    leftUnitValue.textContent = `1 ${fromCurrency} = ${rate.toFixed(5)} ${toCurrency}`;
+    rightUnitValue.textContent = `1 ${toCurrency} = ${(1 / rate).toFixed(5)} ${fromCurrency}`;
 });
 selectActive(leftButtons, fromCurrency);
 selectActive(rightButtons, toCurrency);
