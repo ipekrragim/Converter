@@ -26,19 +26,13 @@ function getExchangeRate(from, to, callback) {
     const url = `${APIURL}${from}`;
     fetch(url)
         .then(response => {
-            if (!response.ok) throw new Error("Məzənnə məlumatı yüklənmədi.");
+            if (!response.ok) throw new Error("Məzənnə yüklənmədi.");
             return response.json();
         })
         .then(data => {
             const rate = data.conversion_rates[to];
-            if (!rate) throw new Error(`Valyuta tapılmadı: ${to}`);
             callback(rate);
         })
-        .catch(error => {
-            connectionMsg.textContent = "NO CONNECTION!";
-            connectionMsg.style.display = "block";
-            console.error(error);
-        });
 }
 
 function updateConversion(side) {
@@ -78,13 +72,35 @@ function updateConversion(side) {
     }
 }
 
+function validateInput(event) {
+    const input = event.target;
+    let value = input.value;
+    value = value.replace(/,/g, '.');
+    value = value.replace(/[^0-9.]/g, '');
+    const parts = value.split('.');
+    if (value === "0") {
+        input.value = "0";
+        return;
+    }
+
+    if (parts[1] && parts[1].length > 5) {
+        value = parts[0] + '.' + parts[1].slice(0, 5);
+    }
+
+    input.value = value;
+}
 function convert(side) {
+    let amount;
     if (side === "right") {
-        const amount = parseFloat(leftInput.value) || 0;
-        rightInput.value = amount === 0 ? "0" : (amount * exchangeRate).toFixed(5);
+        amount = Number(leftInput.value);
+        amount = isNaN(amount) ? 0 : amount; 
+        // Convert and show the result with up to 5 decimal places or just "0" if it's zero
+        rightInput.value = amount === 0 ? "0" : (amount * exchangeRate).toFixed(5).replace(/\.?0+$/, "");
     } else if (side === "left") {
-        const amount = parseFloat(rightInput.value) || 0;
-        leftInput.value = amount === 0 ? "0" : (amount / exchangeRate).toFixed(5);
+        amount = Number(rightInput.value);
+        amount = isNaN(amount) ? 0 : amount;
+        // Convert and show the result with up to 5 decimal places or just "0" if it's zero
+        leftInput.value = amount === 0 ? "0" : (amount / exchangeRate).toFixed(5).replace(/\.?0+$/, "");
     }
 }
 
@@ -115,7 +131,10 @@ function validateInput(event) {
     if (parts[1] && parts[1].length > 5) {
         value = parts[0] + '.' + parts[1].slice(0, 5);
     }
-
+    if (value === "0") {
+        input.value = "0";
+        return;
+    }
     input.value = value;
 }
 
