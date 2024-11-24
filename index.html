@@ -1,0 +1,76 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <title>Currency Converter</title>
+</head>
+<body>
+    <div class="all-container">
+        <header>
+            <div class="logo-bank">
+                <img src="images/2220b03c0726ae6807b6de824e538e46 (2).png" alt="Bank Logo">
+            </div>
+            <nav class="menu">
+                <ul>
+                    <li><a href="#bank" class="active">BANK</a></li>
+                    <li><a href="#">BUSINESS</a></li>
+                    <li><a href="#">INVESTMENTS</a></li>
+                    <li><a href="#">INSURANCE</a></li>
+                    <li><a href="#">MOBILE</a></li>
+                    <li><a href="#">TRAVEL</a></li>
+                    <li><a href="#">ENTERTAINMENT</a></li>
+                </ul>
+            </nav>
+            <div class="burger-login">
+                <div class="burger">
+                    <i class="fa-solid fa-bars fa-2xl burger-menu"></i>
+                </div>
+                <div class="btn-login">
+                    <button class="login-btn">LOGIN</button>
+                </div>
+            </div>
+        </header>
+        <main>
+            <div class="title">
+                <h1>Online Currency Converter</h1>
+            </div>
+            <section id="bank">
+                <div class="container">
+                    <div class="left-side">
+                        <p>You have</p>
+                        <div class="left-units">
+                            <button class="default">RUB</button>
+                            <button>USD</button>
+                            <button>EUR</button>
+                            <button>GBP</button>
+                        </div>
+                        <div class="input-p-container">
+                            <input class="input" type="text">
+                            <p class="oneunit"></p>
+                        </div>
+                    </div>
+                    <div class="right-side">
+                        <p>You will buy</p>
+                        <div class="right-units">
+                            <button class="unit">RUB</button>
+                            <button class="unit default">USD</button>
+                            <button class="unit">EUR</button>
+                            <button class="unit">GBP</button>
+                        </div>
+                        <div class="input-p-container">
+                            <input class="input" type="text">
+                            <p class="oneunit"></p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+    <div id="connection-msg"></div>
+    <script src="app.js"></script>
+</body>
+</html>
