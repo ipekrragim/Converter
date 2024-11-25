@@ -2,7 +2,6 @@
 let fromCurrency = "RUB";
 let toCurrency = "USD";
 let exchangeRate = null;
-
 const leftInput = document.querySelector(".left-side input");
 const rightInput = document.querySelector(".right-side input");
 const leftButtons = document.querySelectorAll(".left-units button");
@@ -14,17 +13,27 @@ const burger = document.querySelector('.burger');
 const menu = document.querySelector('.menu ul');
 const defaultAmount = 5000;
 leftInput.value = defaultAmount;
+function checkConnection() {
+    if (!navigator.onLine) {
+        connectionMsg.textContent = "No Connection!";
+        connectionMsg.style.display = "block";
+    }
+    window.addEventListener("online", () => {
+        connectionMsg.textContent = "";
+        connectionMsg.style.display = "none";
+    });
+    window.addEventListener("offline", () => {
+        connectionMsg.textContent = "No Connection!";
+        connectionMsg.style.display = "block";
+    });
+}
+checkConnection();
 function selectActive(buttons, selectedCurrency) {
     buttons.forEach(button => {
         button.classList.toggle("default", button.textContent === selectedCurrency);
     });
 }
 function getExchangeRate(from, to, callback) {
-    if (!navigator.onLine) {
-        connectionMsg.textContent = "No Connection!";
-        connectionMsg.style.display = "block";
-        return;  
-    }
     const url = `${APIURL}${from}`;
     fetch(url)
         .then(response => {
