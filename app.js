@@ -1,4 +1,4 @@
- const APIURL = "https://v6.exchangerate-api.com/v6/fdbae4130ae0fedddc2aa063/latest/";
+ const APIURL = "https://v6.exchangerate-api.com/v6/2710aeba150247796e9e92b8/latest/";
 let fromCurrency = "RUB";
 let toCurrency = "USD";
 let exchangeRate = null;
